@@ -1,4 +1,4 @@
-@file:Suppress("MagicNumber", "UnderscoresInNumericLiterals")
+@file:Suppress("MagicNumber", "UnderscoresInNumericLiterals", "TooGenericExceptionCaught")
 
 package template.extensions
 
@@ -72,7 +72,13 @@ class HSEExtension : Extension() {
     }
 
     private suspend fun check() {
-        val html = client.get<String>(URL)
+        val html = try {
+            client.get<String>(URL)
+        } catch (T: Throwable) {
+            println(T)
+
+            return
+        }
 
         val paragraph = html.split("<h2>Who can register</h2>", limit = 2)
             .last()
